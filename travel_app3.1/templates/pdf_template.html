@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Маршрут: {{ route.title }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        h1 { color: #333; }
+        .section { margin-bottom: 1.5em; }
+        .point, .expense { border: 1px solid #ccc; padding: 10px; margin-top: 5px; }
+        img { max-width: 150px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Маршрут: {{ route.title }}</h1>
+    <p><strong>Описание:</strong> {{ route.description }}</p>
+    <p><strong>Даты:</strong> {{ route.start_date }} — {{ route.end_date }}</p>
+
+    <div class="section">
+        <h2>Точки маршрута</h2>
+        {% for point in route.points %}
+        <div class="point">
+            <strong>{{ point.name }}</strong> ({{ point.date }})<br>
+            {{ point.note }}<br>
+            <small>Координаты: {{ point.lat }}, {{ point.lon }}</small><br>
+            {% if point.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' + point.image_filename, _external=True) }}">
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Расходы</h2>
+        {% for expense in route.expenses %}
+        <div class="expense">
+            <strong>{{ expense.category }}</strong>: {{ expense.amount }} ₽<br>
+            📅 {{ expense.date }}<br>
+            {{ expense.description }}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

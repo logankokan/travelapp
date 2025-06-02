@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-semibold mb-4">Редактировать точку</h2>
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        <input name="name" value="{{ point.name }}" required class="w-full border px-3 py-2 rounded" placeholder="Название">
+        <div class="flex gap-2">
+            <input name="lat" type="text" value="{{ point.lat }}" required class="w-1/2 border px-3 py-2 rounded" placeholder="Широта">
+            <input name="lon" type="text" value="{{ point.lon }}" required class="w-1/2 border px-3 py-2 rounded" placeholder="Долгота">
+        </div>
+        <input type="date" name="date" value="{{ point.date }}" required class="w-full border px-3 py-2 rounded">
+        <textarea name="note" class="w-full border px-3 py-2 rounded" placeholder="Заметка">{{ point.note }}</textarea>
+        {% if point.image_filename %}
+        <img src="{{ url_for('static', filename='uploads/' + point.image_filename) }}" class="w-32 rounded shadow">
+        {% endif %}
+        <input type="file" name="image" class="w-full">
+        <div class="flex justify-between">
+            <a href="{{ url_for('view_route', route_id=point.route_id) }}" class="text-blue-600 hover:underline">← Назад</a>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Сохранить</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

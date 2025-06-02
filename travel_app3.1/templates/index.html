@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block head_scripts %}
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">Планировщик путешествий</h1>
+
+<a href="{{ url_for('create_route') }}" class="inline-block mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+    Создать маршрут
+</a>
+
+
+<div id="map" class="w-full h-96 rounded shadow mb-6"></div>
+
+<ul class="space-y-2">
+    {% for route in routes %}
+        <li class="bg-white p-4 rounded shadow">
+            <a class="text-lg font-semibold text-blue-600 hover:underline" href="{{ url_for('view_route', route_id=route.id) }}">
+                {{ route.title }}
+            </a>
+            <div class="text-sm text-gray-500">{{ route.start_date }} – {{ route.end_date }}</div>
+        </li>
+    {% else %}
+        <li class="text-gray-500">Маршруты не добавлены.</li>
+    {% endfor %}
+</ul>
+
+<script>
+    ymaps.ready(function () {
+        var map = new ymaps.Map('map', {
+            center: [55.75, 37.61],
+            zoom: 5,
+            controls: ['zoomControl', 'fullscreenControl']
+        });
+
+        var geoObjects = [];
+
+        {% for route in routes %}
+            {% for point in route.points %}
+                {% if point.lat and point.lon %}
+        var placemark = new ymaps.Placemark([{{ point.lat }}, {{ point.lon }}], {
+            balloonContentHeader: '{{ point.name|e }}',
+            balloonContentBody: '{{ point.note|e }}'
+        }, {
+            preset: 'islands#blueDotIcon'
+        });
+        geoObjects.push(placemark);
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+
+        if (geoObjects.length > 0) {
+            var clusterer = new ymaps.Clusterer();
+            clusterer.add(geoObjects);
+            map.geoObjects.add(clusterer);
+            map.setBounds(clusterer.getBounds(), {checkZoomRange:true, zoomMargin: 40});
+        }
+    });
+</script>
+{% endblock %}

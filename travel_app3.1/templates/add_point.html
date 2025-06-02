@@ -1,0 +1,11 @@
+<form method="POST" action="{{ url_for('add_point') }}">
+    <input type="hidden" name="route_id" value="{{ route.id }}">
+    
+    <label for="location_name">Название места (город, адрес):</label>
+    <input type="text" name="location_name" required>
+
+    <label for="note">Заметка:</label>
+    <input type="text" name="note">
+
+    <button type="submit">Добавить точку</button>
+</form>
